@@ -207,7 +207,7 @@ x[z]
 Sort all the values of $x$ in *decreasing* order. Do this two different ways.
 ```{r linewidth=80}
 rev(sort(x))
-
+sort(x)[20:0]
 ```
 
 ## Question 11
@@ -217,7 +217,9 @@ rev(sort(x))
 
 Replace all positive values in the vector $x$ with zero, using `which()`. Confirm that all values in the new vector are $\leq 0$ using `all()`.
 ```{r linewidth=80}
-# FILL ME IN
+w <- which(x>0)
+x[w] <- 0
+all(x <= 0)
 ```
 
 # Lists
@@ -229,10 +231,12 @@ Replace all positive values in the vector $x$ with zero, using `which()`. Confir
 
 Create an empty list $x$. Then define its *second* entry as the vector 2:4. Then print the list. What value does the first entry default to?
 ```{r linewidth=80}
-# FILL ME IN
+x <- list()
+x[[2]] <- 2:4
+print(x)
 ```
 ```
-FILL ME IN
+The first entry defaults to NULL
 ```
 
 ## Question 13
@@ -242,7 +246,9 @@ FILL ME IN
 
 Use the `names()` function to rename the list entries to `x` and `y`. Print $x$ to ensure your changes took hold.
 ```{r linewidth=80}
-# FILL ME IN
+names(x)[[1]] <- 'x'
+names(x)[[2]] <- 'y'
+print(x)
 ```
 
 ## Question 14
@@ -252,7 +258,8 @@ Use the `names()` function to rename the list entries to `x` and `y`. Print $x$ 
 
 Change the name of the first entry of the list $x$ to `a`. Do this by setting something equal to "a", i.e., *not* by simply repeating your answer to Q13. Hint: `names()` returns a vector, and you know how to change the values associated with individual entries in a vector.
 ```{r linewidth=80}
-# FILL ME IN
+names(x)[1] = 'a'
+print(names(x))
 ```
 
 # Data Frames
@@ -264,7 +271,10 @@ Change the name of the first entry of the list $x$ to `a`. Do this by setting so
 
 Create a data frame `df` that has columns `x` and `y` and has three rows. Use the `nrow()`, `ncol()`, and `dim()` functions to display the number of rows, the number of columns, and the dimensions of `df`. Let the first column contain numbers, and the second column contain logical values.
 ```{r linewidth=80}
-# FILL ME IN
+df <- data.frame(x=c(1,2,3), y=c(TRUE, FALSE, FALSE))
+nrow(df)
+ncol(df)
+dim(df)
 ```
 
 ## Question 16
@@ -274,7 +284,7 @@ Create a data frame `df` that has columns `x` and `y` and has three rows. Use th
 
 Add columns to `df` using the dollar sign operator, using the double bracket notation with number, and using the double bracket notation with character name.
 ```{r linewidth=80}
-# FILL ME IN
+
 ```
 
 ## Question 17
@@ -306,7 +316,8 @@ Display the contents of the first row of `df` using the row number and then usin
 
 Initialize a 2 x 2 matrix where all the matrix elements are 1. Display the matrix.
 ```{r linewidth=80}
-# FILL ME IN
+m <- matrix(1, nrow=2, ncol=2)
+print(m)
 ```
 
 ## Question 20
@@ -316,7 +327,7 @@ Initialize a 2 x 2 matrix where all the matrix elements are 1. Display the matri
 
 Initialize another matrix that is 2 x 2, and fill the first column with your first and last name, and the second column with the first and last name of your favorite professor. (No pressure.) Display the matrix.
 ```{r linewidth=80}
-# FILL ME IN
+n <- matrix()
 ```
 
 ## Question 21
