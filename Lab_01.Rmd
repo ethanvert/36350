@@ -284,7 +284,10 @@ dim(df)
 
 Add columns to `df` using the dollar sign operator, using the double bracket notation with number, and using the double bracket notation with character name.
 ```{r linewidth=80}
-
+df$g <- c(TRUE, FALSE, TRUE)
+df[[4]] = 2:4
+df[['c']] <- c('hi', 'he', 'ho')
+print(df)
 ```
 
 ## Question 17
@@ -294,7 +297,8 @@ Add columns to `df` using the dollar sign operator, using the double bracket not
 
 Use `row.names()` to change the names of the rows of `df` to "1st", "2nd", and "3rd".
 ```{r linewidth=80}
-# FILL ME IN
+row.names(df) <- c("1st", "2nd", "3rd")
+print(df)
 ```
 
 ## Question 18
@@ -304,7 +308,8 @@ Use `row.names()` to change the names of the rows of `df` to "1st", "2nd", and "
 
 Display the contents of the first row of `df` using the row number and then using the row name. Note that you access the elements of a two-dimensional object using `[row number/name,column number/name]`.
 ```{r linewidth=80}
-# FILL ME IN
+df[1,]
+df["1st",]
 ```
 
 # Matrices
@@ -327,7 +332,8 @@ print(m)
 
 Initialize another matrix that is 2 x 2, and fill the first column with your first and last name, and the second column with the first and last name of your favorite professor. (No pressure.) Display the matrix.
 ```{r linewidth=80}
-n <- matrix()
+n <- matrix(c("ethan", "vertal", "mohamed", "farag"),2,2)
+n
 ```
 
 ## Question 21
@@ -337,7 +343,8 @@ n <- matrix()
 
 Flip the order of entries in the second column of the matrix in the last question, in just one line of code. Display the matrix.
 ```{r linewidth=80}
-# FILL ME IN
+n[,2] = rev(n[,2])
+n
 ```
 
 ## Question 22
@@ -347,7 +354,13 @@ Flip the order of entries in the second column of the matrix in the last questio
 
 Define a 2 x 2 matrix with elements 1, 2, 3, 4, and another with elements 4, 3, 2, 1. Multiply the two using the `%*%` operator. Then take the transpose of the second matrix and multiply the two matrices. (See `t()`.) Then, last, compute the inverse of the first matrix. (See `solve()`.) Verify that the matrix inverse multiplies with the original matrix to yield the identity matrix.
 ```{r linewidth=80}
-# FILL ME IN
+o = matrix(1:4, 2, 2)
+p = matrix(4:1, 2, 2)
+o %*% p
+o %*% t(p)
+solve(o) %*% o
+
+
 ```
 
 ## Question 23
@@ -357,7 +370,7 @@ Define a 2 x 2 matrix with elements 1, 2, 3, 4, and another with elements 4, 3, 
 
 When you define a (non-sparse) matrix, you set aside memory to hold the contents of that matrix. Assuming that your matrix holds double-precision floating-point numbers, and that your laptop's memory is 8 GB, what is the largest square matrix ("square" = same number of rows and columns) that you can define? (An approximate answer is fine.) This is an important consideration if, e.g., you have a set of $n$ data points and you wish to construct a matrix that contains all the pairwise distances between points. If $n$ gets too large, you <i>will</i> run out of memory.
 ```
-FILL ME IN
+
 ```
 
 # Handy Vector Functions
@@ -381,7 +394,7 @@ z = c(-5,1,2,-4,3,4,-3,6)
 
 Display the list `l` as a numerical vector, with names associated with each element.
 ```{r linewidth=80}
-# FILL ME IN
+unlist(l)
 ```
 
 ## Question 25
@@ -391,7 +404,7 @@ Display the list `l` as a numerical vector, with names associated with each elem
 
 Display the list `l` as a numerical vector, while stripping away the names seen in Q24.
 ```{r linewidth=80}
-# FILL ME IN
+as.vector(unlist(l))
 ```
 
 ## Question 26
@@ -401,7 +414,7 @@ Display the list `l` as a numerical vector, while stripping away the names seen 
 
 Repeat Q25, but display the vector in *descending* order.
 ```{r linewidth=80}
-# FILL ME IN
+sort(as.vector(unlist(l)), decreasing = TRUE)
 ```
 
 ## Question 27
@@ -425,7 +438,7 @@ Reorder the rows so that the entries of the `x` column are in numerical order an
 
 Display the proportion of the total number of unique values in `u` to the number of values in `u`.
 ```{r linewidth=80}
-# FILL ME IN
+length(unique(u))/length(u)
 ```
 
 ## Question 29
@@ -435,7 +448,7 @@ Display the proportion of the total number of unique values in `u` to the number
 
 Display a table that shows how often each value of `v` appears.
 ```{r linewidth=80}
-# FILL ME IN
+table(v)
 ```
 
 ## Question 30
@@ -445,7 +458,7 @@ Display a table that shows how often each value of `v` appears.
 
 How many unique values do `u` and `v` have in common?
 ```{r linewidth=80}
-# FILL ME IN
+length(intersect(u,v))
 ```
 
 ## Question 31
@@ -455,7 +468,7 @@ How many unique values do `u` and `v` have in common?
 
 Write down an expression that returns `TRUE` if the union of `u` and `v` has 100 elements and `FALSE` otherwise.
 ```{r linewidth=80}
-# FILL ME IN
+length(union(u,v)) == 100
 ```
 
 ## Question 32
@@ -465,7 +478,7 @@ Write down an expression that returns `TRUE` if the union of `u` and `v` has 100
 
 Display the (sorted!) values of `u` that do not appear in `v`.
 ```{r linewidth=80}
-# FILL ME IN
+sort(setdiff(u, v))
 ```
 
 ## Question 33
@@ -475,5 +488,6 @@ Display the (sorted!) values of `u` that do not appear in `v`.
 
 Display a table showing how many values that are in `v` but not in `u` fall into the bins [1,50] and [51,100].
 ```{r linewidth=80}
-# FILL ME IN
+table(findInterval(setdiff(v, u), c(51,101)))
+
 ```
