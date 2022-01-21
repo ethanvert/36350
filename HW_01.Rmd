@@ -90,7 +90,7 @@ Note that if the length of the longer vector is not a multiple of the length of 
 
 Use recycling to define a 4 x 5 matrix where the first three rows are zero and the fourth row contains the first five multiples of 4 (i.e., 4, 8, 12, 16, 20). You can do this in a single line.
 ```{r linewidth=80}
-m <- matrix(, nrow = 4, ncol = 5, byrow = TRUE)
+m <- matrix(1:20 * c(0,0,0,1), nrow = 4, ncol = 5)
 m
 ```
 
@@ -107,10 +107,12 @@ Attributes in `R` are metadata that one can attach to any defined object. Some o
 
 Define a 2x3 matrix $x$. What is the predefined attribute? Access the second value of that attribute.
 ```{r linewidth=80}
-# FILL ME IN
+x <- matrix(1:6,nrow=2,ncol=3)
+attributes(x)
+attributes(x)$dim[2]
 ```
 ```
-FILL ME IN
+The predefined attribute is dim
 ```
 
 ## Question 6
@@ -118,7 +120,8 @@ FILL ME IN
 
 Using the `Sys.timezone()` function, define an attribute `timezone` for the matrix $x$. Display the attributes of $x$ to ensure that `timezone` is one of them.
 ```{r linewidth=80}
-# FILL ME IN
+attr(x, 'timezone') <- Sys.timezone()
+attributes(x)
 ```
 
 ## Question 7
@@ -126,7 +129,8 @@ Using the `Sys.timezone()` function, define an attribute `timezone` for the matr
 
 Remove the `timezone` attribute from $x$. Display the attributes of $x$ to ensure that `timezone` is not one of them.
 ```{r linewidth=80}
-# FILL ME IN
+attr(x, 'timezone') <- NULL
+attributes(x)
 ```
 
 # Handy Vector Functions
@@ -143,15 +147,16 @@ v = sample(100,100,replace=TRUE)
 
 Construct and display a single (sorted!) vector that shows the complement of the intersection of `u` and `v`. Then compute and display how many total elements of `u` and `v` are in the complement. (Hint: for the second part, consider using `is.element()` to determine if the elements of the concatenated vector that combines `u` and `v` is in the complement. Your final answer should be 83.)
 ```{r linewidth=80}
-# FILL ME IN
+sort(setdiff(union(u,v), intersect(u,v)))
+sum(is.element(c(u,v), setdiff(union(u,v), intersect(u,v))))
 ```
 
 ## Question 9
 *(10 points)*
 
-In Q29 of the lab, you displayed a table that shows how often each value of `v` appears. The same vector `v` is defined above. (We are able to replicate it because we use `set.seed()` with the same seed as in the lab and we then lay out the same sequence of vector definintions as we had in the lab. If we didn't include the definition of `u` here, then `v` would not match what we had in the lab. Reproducibility is a Good Thing<sup>&trade;</sup>.) Use `R` code to extract, as a number (meaning: not as a character string), the value that was repeated the most times in `v`. (Hints: use `table()`; note that `which.max()` gives you index of a vector's maximum value, like the maximum value within a table; `names()` allows you the extract the values of the original vector, when applied to the output of `table()`.)
+In Q29 of the lab, you displayed a table that shows how often each value of `v` appears. The same vector `v` is defined above. (We are able to replicate it because we use `set.seed()` with the same seed as in the lab and we then lay out the same sequence of vector definitions as we had in the lab. If we didn't include the definition of `u` here, then `v` would not match what we had in the lab. Reproducibility is a Good Thing<sup>&trade;</sup>.) Use `R` code to extract, as a number (meaning: not as a character string), the value that was repeated the most times in `v`. (Hints: use `table()`; note that `which.max()` gives you index of a vector's maximum value, like the maximum value within a table; `names()` allows you the extract the values of the original vector, when applied to the output of `table()`.)
 ```{r linewidth=80}
-# FILL ME IN
+as.numeric(names(which.max(table(v))))
 ```
 
 ## Question 10
@@ -159,7 +164,8 @@ In Q29 of the lab, you displayed a table that shows how often each value of `v` 
 
 In Q33 of the lab, you displayed a table showing how many values are in `v` but not in `u` fell into the bins [1,50] and [51,100]. Here: show your answer again, then add a line of code in which you confirm your answer using a relational operator (like &gt;) and `sum()`. (This is meant to reinforce the use of relational operators.)
 ```{r linewidth=80}
-# FILL ME IN
+table(findInterval(setdiff(v, u), c(51,101)))
+sum(is.element(setdiff(v,u)[setdiff(v,u) > 50],setdiff(v,u)))
 ```
 
 ## Question 11
@@ -167,7 +173,7 @@ In Q33 of the lab, you displayed a table showing how many values are in `v` but 
 
 Write down an expression that returns `FALSE` if the union of `u` and `v` has 100 elements and `TRUE` otherwise.
 ```{r linewidth=80}
-# FILL ME IN
+length(union(u,v)) != 100
 ```
 
 ## Question 12
@@ -175,5 +181,5 @@ Write down an expression that returns `FALSE` if the union of `u` and `v` has 10
 
 Display the (sorted) values of `v` that do not appear in `u`.
 ```{r linewidth=80}
-# FILL ME IN
+sort(setdiff(v,u))
 ```
