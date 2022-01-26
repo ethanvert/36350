@@ -11,9 +11,9 @@ output:
     theme: spacelab
 ---
 
-Name: 
+Name: Ethan Vertal
 
-Andrew ID: 
+Andrew ID: evertal
 
 You must submit **your own** homework as a PDF file on Gradescope.
 
@@ -40,7 +40,15 @@ knit_hooks$set(output = function(x, options) {
 
 Write a `for()` loop, that loops up to 1000 times, that samples a single datum from a standard normal. In order, in the loop, sample the single datum using `rnorm()`, utilize `next` if that datum is less than 1, then print the index of the datum (via `cat()` with a following line break, i.e., "\\n"), and last utilize `break` if the datum is greater than 2. (The last digit shown should be very much less than 1000. The expected value of the number of times we would sample from a standard normal before observing a value greater than 2 is given by `1/p = 1/(1-pnorm(2))`, which is about 44.)
 ```{r linewidth=80}
-# FILL ME IN
+for (ii in 1:1000) {
+  n <- rnorm(1)
+  
+  if (n < 1) {
+    cat(ii, "\n")
+  } else if (n > 2) {
+    break
+  }
+}
 ```
 
 ## Question 2
@@ -48,7 +56,17 @@ Write a `for()` loop, that loops up to 1000 times, that samples a single datum f
 
 Write a `while()` loop that simulates the flipping of eight coins and loops until all eight coins are heads or all eight coins are tails, at which point you should break out of the loop. Define a counter that increments by one every time through the loop, and print the value of that counter after you break out of it. For full credit, utilize an `if` construct with a logical `or`. (Hint: `rbinom(1,8,0.5)` returns the number of successes when flipping a fair coin eight times.)
 ```{r linewidth=80}
-# FILL ME IN
+homogeneous <- FALSE
+counter <- 0
+
+while (homogeneous == FALSE) {
+  counter <- counter + 1
+  outcome <- rbinom(1, 8, 0.5)
+  if (outcome == 0 || outCome == 8) {
+    break
+  }
+}
+print(counter)
 ```
 
 ## Question 3
