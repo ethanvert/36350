@@ -61,8 +61,11 @@ Write an `if` construct that, if there are matching elements of `u` and `v` (i.e
 set.seed(999)
 u = sample(100,100,replace=TRUE)
 v = sample(100,100,replace=TRUE)
-
-# FILL ME IN
+if (sum(u==v) > 0) {
+  print(sum(u==v))
+} else {
+  print("There are no matching elements")
+}
 ```
 
 ## Question 4
@@ -71,7 +74,15 @@ v = sample(100,100,replace=TRUE)
 
 Confirm the short-circuiting behavior of an `if-else` construct by (a) setting the variable `t` to the value 4, and (b) writing an `if-else` construct that first checks if `t` is greater than or equal to 4 and if so prints "t >= 4", then checks to see if `t` is greater than zero and if so prints "t > 0", and otherwise prints "t <= 0".
 ```{r linewidth=80}
-# FILL ME IN
+t <- 4
+
+if (t >= 4) {
+  print("t >= 4")
+} else if (t > 0) {
+  print("t > 0")
+} else {
+  print("t < 0")
+}
 ```
 
 # Looping
@@ -85,7 +96,12 @@ Write a `for()` loop to add, elementwise, the vectors `x` and `y` defined below.
 x = c(1,2,3,4)
 y = c(-2,2,-3,3)
 
-# FILL ME IN
+x.plus.y <- rep(NA, 4)
+for (i in 1:4) {
+  x.plus.y[i] <- x[i] + y[i]
+}
+
+print(x.plus.y)
 ```
 
 ## Question 6
@@ -257,5 +273,12 @@ the right margin in the PDF output.
 
 Code what is possibly the simplest example of recursive function use: the factorial function, i.e., $x! = x \times (x-1) \times \cdots \times 1$, for positive whole number $x$. Note that the name `factorial()` is already used for a function in `R`'s base package, so use `my_factorial()` instead. Comments are not necessary, and note that your function body only need be two lines long. Compute 5!.
 ```{r linewidth=80}
-# FILL ME IN
+my_factorial = function(num) {
+  if (num < 1) {
+    return (1)
+  }
+  
+  return (num * factorial(num - 1))
+}
+my_factorial(5)
 ```

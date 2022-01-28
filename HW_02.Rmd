@@ -44,8 +44,10 @@ for (ii in 1:1000) {
   n <- rnorm(1)
   
   if (n < 1) {
-    cat(ii, "\n")
-  } else if (n > 2) {
+    next
+  } 
+  cat(ii, "\n")
+  if (n > 2) {
     break
   }
 }
@@ -62,7 +64,7 @@ counter <- 0
 while (homogeneous == FALSE) {
   counter <- counter + 1
   outcome <- rbinom(1, 8, 0.5)
-  if (outcome == 0 || outCome == 8) {
+  if (outcome == 0 || outcome == 8) {
     break
   }
 }
@@ -74,7 +76,45 @@ print(counter)
 
 A rite of passage for every parent is informing his or her three-year-old child that "Despite how happy you were to beat me, winning at Chutes and Ladders doesn't actually require any skill." Here, you will write a `while()` loop that simulates a single game of Chutes and Ladders. First, see the image of the game board at https://web.archive.org/web/20210224001802/http://vignette4.wikia.nocookie.net/uncyclopedia/images/d/d8/Chutes%26Ladders1.gif/revision/latest?cb=20090809223310. Here are the rules, in case you've forgotten or never played: you start at 0 (off the board) and spin a spinner that randomly selects an integer between 1 and 6, inclusive. (You can think of this as rolling a fair six-sided die. Use `sample()`.) Move your piece that number of spaces. If you end up at the bottom of a ladder, you move to the top of the ladder (so if you are at 0 and spin a 4, you end up at 14); if you end up at the top of a chute, you move to the bottom of the chute. (Beware space 87!) The game ends when you reach 100 exactly (so, for instance, if you are at 97 and spin a 4, you do not move...but if you spin a 1, you move to 98 and slide down the chute to 78). (Note that *you are the only one playing* the game: it's the world's most boring version of Solitaire.) (Hint: after each spin and move, use `which()` to determine which element of, e.g., the vector `ladder.bottom` equals your new position. Call the output of `which()` "`w`". If the length of `w` is greater than zero, then you are at the bottom of a ladder, so you'd reset your position to the corresponding top of the ladder: `ladder.top[w]`. You'd repeat this process, checking if you are at the top of a chute. Hint II: remember...if your new position after a spin is greater than 100, you don't move!)
 ```{r linewidth=80}
-# FILL ME IN
+gameover = FALSE
+ladder.bottom <- c(1, 4, 9, 21, 28, 36, 51, 71, 80)
+ladder.top <- c(38, 14, 31, 42, 84, 44, 67, 91, 100)
+chute.top <- c(98, 95, 93, 87, 64, 62, 56, 49, 47, 16)
+chute.bottom <- c(78, 75, 73, 24, 60, 19, 53, 11, 26, 6)
+pos <- 0
+count <- 1
+
+while (!gameover) {
+  if (pos == 100) {
+    gameover = TRUE
+    break
+  }
+  spin <- sample(1:6, 1)
+  pos = pos + spin
+  if (pos > 100) {
+    pos = pos - spin
+  }
+  
+  w <- which(ladder.bottom == pos)
+  if (length(w) > 0) {
+    print("before")
+    print(pos)
+    pos = ladder.top[w]
+    print("-------- after")
+    print(pos)
+  } else {
+    w <- which(chute.top == pos)
+    if (length(w) > 0) {
+      print("chute before")
+      print(pos)
+      pos = chute.bottom[w]
+      print("chute after------------")
+      print(pos)
+    }
+  }
+  count = count + 1
+}
+print(count)
 ```
 
 ## Question 4
@@ -82,7 +122,28 @@ A rite of passage for every parent is informing his or her three-year-old child 
 
 Create a function `char2int()` that returns the position of the input character value in the English alphabet. For instance, "A" returns 1 and "z" returns 26. Make use of `R`'s built-in constants (see, e.g., `?Constants`), and perform checks on the input: return `NULL` if the input is not of type `character`, if the input string contains more than one character, or if the input string contains non-alphabetical characters. (Also, limit the length of the input vector of strings to one.) Comments are optional. Test your function with inputs 1, "abc", "2", c("a","b"), and "m". Only the last input should yield a non-NULL output. **NOTE**: do not use the `match()` function anywhere in your function! It would do the job of `char2int()` trivially, but the idea here is to build your own function that mimics what `match()` is doing.
 ```{r linewidth=80}
-# FILL ME IN
+char2int = function(letter)
+{
+  if (typeof(letter) != "character" || length(letter) > 1 || nchar(letter) > 1 || !suppressWarnings(is.na(as.integer(letter))))
+  {
+    return (NULL)
+  } else {
+    for ( i in 1:26 ) {
+      if ( letter == LETTERS[[i]] ) {
+        return (i)
+      } else if ( letter == letters[[i]] ){
+        return (i)
+      }
+    }
+  }
+}
+
+
+char2int(1)
+char2int("abc")
+char2int("2")
+char2int(c("a", "b"))
+char2int("m")
 ```
 
 ## Question 5
@@ -90,7 +151,20 @@ Create a function `char2int()` that returns the position of the input character 
 
 Improve your recursive factorial function from Lab 2 to include a check that the input value is either zero or a positive integer. Have the function return `NULL` otherwise. Compute 5!, 0!, -5!, and "a"!. If in the last case you get a thrown exception rather than an output value of `NULL`, think about the sequence of checks you need to do here. (Possibly useful information: 0! = 1.)
 ```{r linewidth=80}
-# FILL ME IN
+my_factorial = function(num) {
+  if (typeof(num) != "double" || num %% 1 != 0 || num < 0) {
+    return (NULL)
+  } else if (num == 0) {
+    return (1)
+  }
+  
+  return (num * factorial(num - 1))
+}
+my_factorial(5)
+my_factorial(0)
+my_factorial(-5)
+my_factorial("a")
+
 ```
 
 ## Question 6
@@ -98,5 +172,26 @@ Improve your recursive factorial function from Lab 2 to include a check that the
 
 The Babylonians devised the following algorithm to compute $\sqrt{x}$, using only basic arithmetic operations. First one guesses the root $r$; for instance, $r=x/2$. Then, either $r^2 > x$ or $r^2 < x$. (Unless we are dealing with perfect squares, $r^2 = x$ is just not gonna happen.) We replace $r$ with the average of $r$ and $x/r$ and repeat. Write a function `root()` that takes as input $x$ and a tolerance $t$ that dictates when you've converged to a solution, i.e., when $|r^2 - x| \leq t$ you stop. Make $10^{-6}$ the default value for $t$. Your `root()` function should output a list with two elements: `sqrt.x`, the value of $r$ at convergence; and `n.iter`, the number of iterations required to achieve convergence. Display results for $x$ = 11, 101, and 1001, and compare those results to those achieved by using the `sqrt()` function (by computing the absolute difference between `sqrt.x` and the output of `sqrt()`). How many iterations were needed to achieve convergence in each case? (Answer this by displaying the number of iterations; you don't need to add text to your answer.) Note: you need not add comments here if you choose not to. Just remember: in real life, you should always add comments so that others can understand your code.
 ```{r linewidth=80}
-# FILL ME IN
+root = function(x, t=10^(-6)) {
+  terminate = FALSE
+  depth = 0
+  r = x/2
+  while (terminate == FALSE) {
+    depth = depth + 1
+    r = (r + x/r)/2
+    if (abs(r^2 - x) <= t) {
+      terminate = TRUE
+    }
+  }
+  return (list(sqrt.x = r, n.iter = depth))
+}
+root(11)[["sqrt.x"]]
+abs(root(11)[["sqrt.x"]] - sqrt(11))
+root(11)[["n.iter"]]
+root(101)[["sqrt.x"]]
+abs(root(101)[["sqrt.x"]] - sqrt(101))
+root(101)[["n.iter"]]
+root(1001)[["sqrt.x"]]
+abs(root(1001)[["sqrt.x"]] - sqrt(1001))
+root(1001)[["n.iter"]]
 ```
