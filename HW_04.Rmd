@@ -1,0 +1,96 @@
+---
+title: "HW: Week 4"
+author: "36-350 -- Statistical Computing"
+date: "Week 4 -- Spring 2022"
+output:
+  pdf_document:
+    toc: no
+  html_document:
+    theme: spacelab
+    toc: yes
+    toc_float: yes
+---
+
+Name: Ethan Vertal
+
+Andrew ID: evertal
+
+You must submit **your own** HW as a PDF file on Gradescope.
+
+```{r wrap-hook,echo=FALSE}
+library(knitr)
+hook_output = knit_hooks$get('output')
+knit_hooks$set(output = function(x, options) {
+  # this hook is used only when the linewidth option is not NULL
+  if (!is.null(n <- options$linewidth)) {
+    x = knitr:::split_lines(x)
+    # any lines wider than n should be wrapped
+    if (any(nchar(x) > n)) x = strwrap(x, width = n)
+    x = paste(x, collapse = '\n')
+  }
+  hook_output(x, options)
+})
+```
+
+---
+
+## Question 1
+*(40 points)*
+
+You are given the following matrix:
+```{r linewidth=80}
+set.seed(505)
+mat = matrix(rnorm(900),30,30)
+mat[sample(30,1),sample(30,1)] = NA
+```
+Compute the standard deviation for each row, using `apply()` and your own on-the-fly function, i.e., a function that is defined *within* the argument list being passed to `apply()`. **Do not use the function sd()!** Realize that since there is a missing value within the matrix, you need to define your function so as to only take into account the non-missing data in each row. If your vector of standard deviations has an `NA` in it, then your function isn't quite working yet.
+```{r linewidth=80} 
+apply(mat, 1, function(r)
+{
+  t = r[!is.na(r)]
+  return(sqrt(sum((t-mean(t))^2)/(length(t)-1)))
+})
+
+```
+---
+
+Below we read in the data on the political economy of strikes.
+```{r linewidth=80}
+strikes.df = read.csv("http://www.stat.cmu.edu/~mfarag/350/strikes.csv")
+```
+
+---
+
+## Question 2
+*(40 points)*
+
+Using `split()` and `sapply()`, compute the average unemployment rate, inflation rates, and strike volume for each year represented in the `strikes.df` data frame. The output should be a matrix of dimension 3 $\times$ 35. (You need not display the matrix contents...just capture the output from `sapply()` and pass that output to `dim()`.) Provide appropriate row names (see `rownames()` to your output matrix. Display the columns for 1962, 1972, and 1982. (This can be done in one line as opposed to three.)
+```{r linewidth=80}
+strikes.sapply <- sapply(split(strikes.df, f=strikes.df$year), 
+       function(x) {
+         c("Unemployment Rate" = mean(x$unemployment),
+           "Inflation Rates" = mean(x$inflation),
+           "Strike Volume" = mean(x$strike.volume))
+       })
+
+dim(strikes.sapply)
+rownames(strikes.sapply)
+strikes.sapply[,c("1962", "1972", "1982")]
+```
+
+## Question 3
+*(40 points)*
+
+Utilize piping and `group_by()`, etc., to compute the average unemployment rate for each country, and display that average for only those countries with the maximum and minimum averages. To be clear: your output should only show average unemployment for Ireland and Switzerland, and nothing else. (Hint: remember `slice()`, a less-often-used `dplyr` function.) Hint: arrange your output in order of descending average unemployment, then note that `n()` applied as an argument to the right function will return the last row.
+```{r linewidth=80}
+if ( require(tidyverse) == FALSE ) {
+  install.packages("tidyverse",repos="https://cloud.r-project.org")
+  suppressWarnings(library(tidyverse))
+}
+
+strikes.df %>% group_by(., country) %>% summarise_at(., vars(unemployment),
+                                                     list(unemployment = mean)) %>%
+                                                     arrange(., -unemployment) %>%
+                                                     slice(., 1, n())
+```
+

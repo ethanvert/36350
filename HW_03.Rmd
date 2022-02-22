@@ -55,8 +55,7 @@ pg
 
 Retrieve (but don't display) the lines of text in `shakespeare.lines` that contain "briers". Then break the retrieved lines into individual words (`strsplit(input," ")` to split the character vector `input` into words separated by spaces), and merge those words into a single character vector (`unlist()`!). How many unique words are there? Display the top five most commonly occurring words and how often they occur (combine `sort()` and `table()`!)
 ```{r linewidth=80}
-unlist(strsplit(grep("briers", shakespeare.lines, value = TRUE), " "))
-table(unlist(strsplit(grep("briers", shakespeare.lines, value = TRUE), " ")))
+head(sort(table(unlist(strsplit(grep("briers", shakespeare.lines, value = TRUE), " "))), decreasing = TRUE), 5)
 ```
 
 ## Question 3
@@ -78,7 +77,8 @@ No, we don't get the same vector of character strings. gregexpr returns all matc
 
 Come up with a strategy that splits punctuation marks or spaces, except that it keeps intact words like "I've" or "wasn't", that have a punctuation mark in the middle, in between two letters. (Or when the punctuation mark is at the beginning, as in "'em") Apply your strategy to `shakespeare.lines` as defined below such that you display only those words with punctuation marks. (Note that I end up with 704 [not necessarily unique, but total] words when I implement this strategy. Some include '\"', which we can easily remove in a subsequent post-processing step if we so choose. Hint: `[[:alnum:]]` is a good thing to use here.)
 ```{r linewidth=80}
-# FILL ME IN
+split.pattern <- "([a-zA-Z][[:punct:]]+[^a-zA-Z]+| +|[a-zA-Z][[:punct:]]$)"
+grep("[[:punct:]][A-z]+", unlist(strsplit(shakespeare.lines, split.pattern)), value = TRUE)
 ```
 
 ---
@@ -97,7 +97,7 @@ date.lines = grep(date.pattern,anss.lines,value=TRUE)
 
 Check that all the lines in `date.lines` actually start with a date, of the form YYYY/MM/DD. rather than contain a date of this form somewhere in the middle of the text. (Hint: it might help to note that you can look for non-matches, as opposed to matches, by changing one of `grep()`'s logical arguments.)
 ```{r linewidth=80}
-# FILL ME IN
+grep("[0-9]{4}/[0-9]{2}/[0-9]{2}", date.lines, value = TRUE, invert = TRUE)
 ```
 
 ## Question 6
@@ -105,10 +105,10 @@ Check that all the lines in `date.lines` actually start with a date, of the form
 
 Which five days witnessed the most earthquakes, and how many were there, these days? Also, what happened on the day with the most earthquakes: can you find any references to this day in the news?
 ```{r linewidth=80}
-# FILL ME IN
+head(sort(table(regmatches(date.lines, regexpr(date.pattern, date.lines, useBytes = TRUE))), decreasing = TRUE), 5)
 ```
 ```
-FILL ME IN: utilize line breaks for PDF output
+2011/03/11 2010/02/27 2004/12/26 2006/11/15 2013/02/06 were the days with the most with 42, 12, 11, 7, 7 respectively. The Tohoku Tsunami happened.
 ```
 
 ## Question 7
@@ -116,7 +116,12 @@ FILL ME IN: utilize line breaks for PDF output
 
 Go back to the data in `date.lines`. Following steps similar to the ones you used in the lab to extract the latitude and longitude of earthquakes, extract the depth and magnitude of earthquakes. In the end, you should have one numeric vector of depths, and one numeric vector of magnitudes. Show the first three depths and the first three magnitudes. (Hint: if you use `regexpr()` and `regmatches()`, then the output from the latter will be a vector of strings. Look at this vector. The last four characters always represent the magnitudes. Use a combination of `substr()` and `as.numeric()` to create the numeric vector of magnitudes. Then use the fact that everything but the last four characters represents the depths. There are a myriad of ways to do this exercise, but this suggested way is the most concise.)
 ```{r linewidth=80}
-# FILL ME IN
+geo.pattern <- "[0-9]{1,3}\\.[0-9]{2} +[0-9]\\.[0-9]{2}"
+matches <- regmatches(date.lines, regexpr(geo.pattern, date.lines, useBytes = TRUE))
+mag <- as.numeric(substr(matches, nchar(matches) - 3, nchar(matches)))
+mag
+depths <- as.numeric(substr(matches, 0, nchar(matches) - 4))
+depths
 ```
 
 ---
@@ -135,7 +140,9 @@ sprint.lines = sprint.lines[min(data.lines):max(data.lines)]
 
 Extract the years in which the sprint times were recorded. Display them in table format. Do the same for the months. Be sure to extract the month of the sprint, not the birth month of the sprinter! (Hint: the month of the sprint is followed by a four-digit year; other instances of two digits in any given line are not. So you may have to extract more than you need, then apply `strsplit()`.)
 ```{r linewidth=80}
-# FILL ME IN
+table(regmatches(sprint.lines, regexpr("[0-9]{4}", sprint.lines, useBytes = TRUE)))
+dates <- regmatches(sprint.lines, regexpr("[0-9]{2}\\.[0-9]{4}", sprint.lines, useBytes = TRUE))
+table(substr(dates, 0, nchar(dates)-5))
 ```
 
 ## Question 9
@@ -143,7 +150,8 @@ Extract the years in which the sprint times were recorded. Display them in table
 
 Extract the countries of origin (for the sprinters). Note that countries of origin are given as a capitalized three-letter abbreviation. Display the table of country origins. Display the proportion of the list that is accounted for by sprinters from the US and Jamaica.
 ```{r linewidth=80}
-# FILL ME IN
+table(regmatches(sprint.lines, regexpr("[A-Z]{3}", sprint.lines, useBytes = TRUE)))
+(406+267)/988
 ```
 
 ## Question 10
@@ -151,7 +159,10 @@ Extract the countries of origin (for the sprinters). Note that countries of orig
 
 We conclude with a web scraping exercise. I want you to go to <a href="https://arxiv.org/year/astro-ph/19">this web site</a>. On it, you see there is a set of 12 bold-faced four-digit numbers: this is the number of submitted astrophysics articles for each month of 2019. I want you to extract these numbers and place them into a single vector, with each vector element having a name: Jan for the first vector element, Feb for the second, etc. You would use `readLines()` to read in the page (pass the URL directly to the function!); this creates a vector of strings. You would then use `regexpr()` and `regmatches()` to extract the numbers (plus potentially some other stuff that you may have to pare off using `substr()`). If necessary, use "view source" to look at the html code for the web page itself to determine how best to extract the 12 numbers and nothing else. You don't want to create a table; you simply want to output the vector of four-digit numbers and add the appropriate names. (Hint: see the documentation for `Constants`. `month.abb` might be helpful here.)
 ```{r linewidth=80}
-# FILL ME IN
+physics.lines <- readLines("https://arxiv.org/year/astro-ph/19")
+nums <- regmatches(physics.lines, regexpr("<b>[0-9]{4}<", physics.lines, useBytes = TRUE))
+nums <- substr(nums, 4, nchar(nums)-1)
+nums
 ```
 
 ## Question 11

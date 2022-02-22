@@ -1,0 +1,99 @@
+---
+title: "HW: Week 6"
+author: "36-350 -- Statistical Computing"
+date: "Week 6 -- Spring 2022"
+output:
+  pdf_document:
+    toc: no
+  html_document:
+    toc: true
+    toc_float: true
+    theme: spacelab
+---
+
+Name: Ethan Vertal
+
+Andrew ID: evertal
+
+You must submit **your own** lab as a PDF file on Gradescope.
+
+```{r wrap-hook,echo=FALSE}
+library(knitr)
+hook_output = knit_hooks$get('output')
+knit_hooks$set(output = function(x, options) {
+  knitr::opts_chunk$set(linewidth = 80)
+  # this hook is used only when the linewidth option is not NULL
+  if (!is.null(n <- options$linewidth)) {
+    x = knitr:::split_lines(x)
+    # any lines wider than n should be wrapped
+    if (any(nchar(x) > n)) x = strwrap(x, width = n)
+    x = paste(x, collapse = '\n')
+  }
+  hook_output(x, options)
+})
+```
+
+---
+
+```{r}
+suppressWarnings(library(tidyverse))
+```
+
+---
+
+## HW Length Cap Instructions
+* If the question requires you to print a data frame in your solution e.g. `q1_out_df`, you must first apply **head(q1_out_df, 30)** and **dim(q1_out_df)** in the final knitted pdf output for such a data frame.
+* Please note that this only applies if you are knitting the `Rmd` to a `pdf`, for Gradescope submission purposes.
+* If you are using the data frame output for visualization purposes (for example), use the entire data frame in your exploration
+* The **maximum allowable length** of knitted pdf HW submission is **30 pages**. Submissions exceeding this length *will not be graded* by the TAs. All pages must be tagged as usual for the required questions per the usual policy
+* For any concerns about HW length for submission, please reach out on Piazza during office hours
+
+## Question 1
+*(20 points)*
+
+Create a Gaussian mixture model sampler. In this sampler, a datum has a 40% chance of being sampled from a N(-1,1) distribution, and a 60% chance of being sampled from a N(2,1/9) distribution. Sample 100,000 data and create a density histogram of your result. Hint: use `sample()` with `replace` set to `TRUE` and an appropriate vector for `prob` in order to determine which of your 100,000 data should randomly be assigned to distribution 1 as opposed to distribution 2. Also note that if you create a sample of data from distribution 1 and another sample from distribution 2, you can simply combine them by doing, e.g., `x = c(sample1,sample2)`, where `x` becomes a vector of length 100,000.
+```{r linewidth=80}
+# FILL ME IN
+```
+
+## Question 2
+*(20 points)*
+
+What is the mean of the mixture model in Q1? Compute this via importance sampling, with 100,000 sampled points. You should get an answer around 0.8 (which you can actually derive analytically: if $X \sim N(-1,1)$ and $Y \sim N(2,1/9)$, then $E[0.4X+0.6Y]) = 0.4E[X] + 0.6E[Y] = -0.4 + 1.2 = 0.8$).
+```{r linewidth=80}
+# FILL ME IN
+```
+
+## Question 3
+*(20 points)*
+
+Remember the Chutes and Ladders question? (Q4 of HW 2.) Display a probability histogram that shows the empirical PDF for the number of spins, computed over 10,000 Chutes and Ladders games. Also display the average number of spins that it takes to win the game (approximately 39, give or take) and the minimum number of spins. (Display these two numbers using `cat()`, being see to indicate which is the mean and which is the minimum number of spins.) (Free feel to use your code from HW 2 as a base for what you do here.)
+```{r linewidth=80}
+# FILL ME IN
+```
+
+## Question 4
+*(20 points)*
+
+The ratio of the area of a circle to the area of a square into which the circle is inscribed is $\pi/4$. Does this ratio increase or decrease with dimensionality? For instance, what is the ratio of volume of a sphere to the volume of a cube into which the sphere is inscribed? Is it less than $\pi/4$? Compute (and display) the ratio for dimensions 3, 4, ..., 10. The result that you see has manifestations for, e.g., algorithms based on nearest neighbors, etc. Curse of dimensionality, n'at. (Hint: to do this calculation succinctly, consider putting samples from your uniform distribution into a $k \times d$ matrix, where $k$ is the number of sampled points, and $d$ is the dimensionality. Then you can use `apply()` to determine the distance of the points from the origin and you can easily finish the calculation from there...)
+```{r linewidth=80}
+# FILL ME IN
+```
+
+## Question 5
+*(20 points)*
+
+What is the probability distribution function for the difference between the maximum value and the median value when you sample nine data from a Uniform(0,1) distribution? Generate an empirical distribution by repeating the process of sampling nine data 5,000 separate times, and record the differences from the maximum and median values. Display a histogram of your result; in addition, display the mean and standard error. The mean should be approximately 0.4.
+```{r linewidth=80}
+# FILL ME IN
+```
+
+## Question 6
+*(20 points)*
+
+Write an inverse transform sampler that samples 10,000 data from a exponential distribution with rate parameter 1, but it only keeps data sampled over the ranges $[0.5,1]$ and $[2,4]$. Make a probability histogram of your result. This time, tweak the call to `geom_histogram()` by adding the argument `breaks=seq(0,5,by=0.1)`.
+
+This is a bit tricky. (Note: this is an inverse transform sampler, so every single randomly sampled uniform random variable has to get mapped to a valid value of $x$.) You might want to start by computing the probabilities $P[0.5 \leq X \leq 1]$ and $P[2 \leq X \leq 4]$. Call these two quantities $u_{\rm lo}$ and $u_{\rm hi}$, and sample random numbers from a Uniform(0,$u_{\rm lo}+u_{\rm hi}$) distribution. If the number is $< u_{\rm lo}$, the sampled number should be mapped to a sample from the lower range, whereas if the number is $> u_{\rm lo}$, it should be mapped to a sample from the upper range. Note: to map from you uniform random variables to exponentially distributed ones, pass your uniform r.v.'s into `qexp()`.
+```{r linewidth=80}
+# FILL ME IN
+```

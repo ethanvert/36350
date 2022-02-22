@@ -268,9 +268,8 @@ head(anss.lines,15)
 
 This looks like webpage code mixed in with earthquake data. We don't care about the first nine lines, and it looks as if the data we want starts on line 10. Importantly, every line of data contains a date, of the form YYYY/MM/DD, as in "2002/01/01". Design a regular expression, call it `date.pattern`, to match to these dates. (Hint: use quantifiers to make `date.pattern` concise.). Use this and `grep()` to retrieve the lines of text containing earthquake data. Call the result `date.lines`. How many lines of data are there? Show the first 2 and the last 2 lines (via the use of `head()` and `tail()`). When was the last earthquake recorded and what was its magnitude?
 ```{r linewidth=80}
-date.pattern <- regexpr("[1-9][0-9]{3}/[0-1][0-9]/[0-3][0-9]", anss.lines, useBytes = TRUE)
-date.lines <- regmatches(anss.lines, date.pattern)
-date.lines
+date.pattern <- "[1-9][0-9]{3}/[0-1][0-9]/[0-3][0-9]"
+date.lines <- grep(date.pattern, anss.lines, value = TRUE)
 ```
 ```
 FILL ME IN: utilize line breaks for PDF output
@@ -284,7 +283,8 @@ FILL ME IN: utilize line breaks for PDF output
 Look back at the lines of earthquake data printed above. The columns for `Lat` and `Lon` give the latitude and longitude, respectively, of the earthquake. Importantly, this takes the form X.XXXX, XX.XXXX, XXX.XXXX, or any of these forms with a leading minus sign, where X is a number. Design a regular expression to match these entries, call it `geo.pattern`. Test it out on the trial string vector below, with `grep()`, and make sure that you match all the strings. (Hint: build the regular expression, "left to right", following this logic: an optional minus sign, 1 to 3 digits, a period, then exactly 4 digits.)
 ```{r linewidth=80}
 trial.str.vec = c("-55.2140", "-129.0000", "6.3030", "125.6500", "-17.9830")
-# FILL ME IN
+geo.pattern <- "[0-9]+\\.[0-9]{4}"
+grep(geo.pattern, anss.lines, value = TRUE)
 ```
 
 ## Question 22
@@ -326,6 +326,7 @@ Apply `strsplit()` to `lat.lon.pairs[1:2]` with `split` set equal to a regex tha
 Design a regex to match all patterns of the following form: any letter (1 or more), then a punctuation mark, then "ve" or "ll" or "t", then a space or a punctuation mark. Call it `my.pattern`. Check, with `grep()`, that it matches all the strings below.
 ```{r linewidth=80}
 trial.str.vec = c("we've.", "I'll ", "don't!")
-# FILL ME IN
+my.pattern <- "[A-z]+[[:punct:]](ve|ll|t)( |[[:punct:]])"
+grep(my.pattern, trial.str.vec, value = TRUE)
 ```
 
