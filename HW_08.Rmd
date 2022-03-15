@@ -72,6 +72,7 @@ if ( require("devtools") == FALSE ) {
   install.packages("devtools",repos="https://cloud.r-project.org")
   library(devtools)
 }
+
 source_url("https://raw.githubusercontent.com/ethanvert/36350/main/dark_and_stormy.R")
 ```
 
@@ -128,8 +129,12 @@ if ( require("testthat") == FALSE ) {
   install.packages("testthat",repos="https://cloud.r-project.org")
   library(testthat)
 }
-
-
+test_that(desc = "testing for improper input (num)", expect_error(f(1)))
+test_that(desc = "testing for improper input vector length", expect_error(f("a", "b", "c")))
+test_that(desc = "testing for expected output type (numeric)", expect_type(f("a"), "double"))
+test_that(desc = "test for basic functionality of a valid input (lowercase)", expect_equal(f("a"), 0))
+test_that(desc = "test for basic functionality of a valid input (uppercase)", expect_equal(f("A"), 0))
+test_that(desc = "testing for proper output vector length (1)", expect_length(f("a"), 1))
 ```
 
 ## Question 6
@@ -139,5 +144,11 @@ if ( require("testthat") == FALSE ) {
 
 Rewrite `f()` below in such a way that all your tests of Q5 pass. (And demonstrate that your tests pass!)
 ```{r linewidth=80}
-# FILL ME IN
+f = function(letter) {
+  if(typeof(letter) != "character") stop("the input must be a character")
+  if(length(letter) != 1) stop("the character vector must be of length 1")
+  if(nchar(letter) > 1) warning("WARNING: only using the first character in the input with nchar > 1")
+  
+  return(log(which(letters==tolower(letter))))
+}
 ```
