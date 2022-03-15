@@ -58,7 +58,7 @@ knit_hooks$set(output = function(x, options) {
 
 Show us that you have a `GitHub` account. Create a repository on `GitHub` called "36-350". (Utilize the checklist in `Notes_8A`.) Then edit the code below so that we see the contents of `README.md`. To get the correct URL, do the following: go to your `GitHub` repo, click on `36-350` and then again on `README.md`, and click on the "Raw" button. Copy and paste the URL to the raw `README.md` file into the call to `readLines()` below.
 ```{r linewidth=80}
-#readLines("Enter the URL to README.md here")
+readLines("https://raw.githubusercontent.com/ethanvert/36350/main/README.md?token=GHSAT0AAAAAABSREHI4H3DIDUUSUX24NZG4YRQXA3Q")
 ```
 
 ## Question 2
@@ -72,7 +72,7 @@ if ( require("devtools") == FALSE ) {
   install.packages("devtools",repos="https://cloud.r-project.org")
   library(devtools)
 }
-#source_url("Enter the URL to dark_and_stormy.R here")
+source_url("Enter the URL to dark_and_stormy.R here")
 ```
 
 ## Question 3
