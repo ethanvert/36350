@@ -135,6 +135,7 @@ test_that(desc = "testing for expected output type (numeric)", expect_type(f("a"
 test_that(desc = "test for basic functionality of a valid input (lowercase)", expect_equal(f("a"), 0))
 test_that(desc = "test for basic functionality of a valid input (uppercase)", expect_equal(f("A"), 0))
 test_that(desc = "testing for proper output vector length (1)", expect_length(f("a"), 1))
+test_that(desc = "testing for proper functionality on a string length > 1", expect_equal(f("ab"), 0))
 ```
 
 ## Question 6
@@ -149,6 +150,6 @@ f = function(letter) {
   if(length(letter) != 1) stop("the character vector must be of length 1")
   if(nchar(letter) > 1) warning("WARNING: only using the first character in the input with nchar > 1")
   
-  return(log(which(letters==tolower(letter))))
+  return(log(which(letters==tolower(substr(letter, 1, 1)))))
 }
 ```
