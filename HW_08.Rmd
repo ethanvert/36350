@@ -11,9 +11,9 @@ output:
     theme: spacelab
 ---
 
-Name: 
+Name: Ethan Vertal
 
-Andrew ID: 
+Andrew ID: evertal
 
 You must submit **your own** HW as a PDF file on Gradescope.
 
@@ -58,7 +58,7 @@ knit_hooks$set(output = function(x, options) {
 
 Show us that you have a `GitHub` account. Create a repository on `GitHub` called "36-350". (Utilize the checklist in `Notes_8A`.) Then edit the code below so that we see the contents of `README.md`. To get the correct URL, do the following: go to your `GitHub` repo, click on `36-350` and then again on `README.md`, and click on the "Raw" button. Copy and paste the URL to the raw `README.md` file into the call to `readLines()` below.
 ```{r linewidth=80}
-readLines("https://raw.githubusercontent.com/ethanvert/36350/main/README.md?token=GHSAT0AAAAAABSREHI4H3DIDUUSUX24NZG4YRQXA3Q")
+readLines("https://raw.githubusercontent.com/ethanvert/36350/main/README.md")
 ```
 
 ## Question 2
@@ -72,7 +72,7 @@ if ( require("devtools") == FALSE ) {
   install.packages("devtools",repos="https://cloud.r-project.org")
   library(devtools)
 }
-source_url("Enter the URL to dark_and_stormy.R here")
+source_url("https://raw.githubusercontent.com/ethanvert/36350/main/dark_and_stormy.R")
 ```
 
 ## Question 3
@@ -82,8 +82,8 @@ source_url("Enter the URL to dark_and_stormy.R here")
 
 Following the instructions in `Notes_8A`, create a new branch both on `GitHub` and in your local project. Call it `new_branch`. Once you have done this, alter `dark_and_stormy.R` so that it prints "It was a dark and stormy night; the rain fell in torrents." Stage, commit, and push as you would have done in Q2. Source the `main` branch file as you did in Q2, and also source the `new_branch` file. If the output of the first does not include "the rain fell in torrents," while the output of the second one does include that phrase, you're good.
 ```{r linewidth=80}
-#source_url("Enter the URL to the main branch version of dark_and_stormy.R here")
-#source_url("Enter the URL to the new-branch version of dark_and_stormy.R here")
+suppressMessages(source_url("https://raw.githubusercontent.com/ethanvert/36350/main/dark_and_stormy.R"))
+suppressMessages(source_url("https://raw.githubusercontent.com/ethanvert/36350/new_branch/dark_and_stormy.R"))
 ```
 
 ## Question 4
@@ -96,7 +96,7 @@ Another way to create a code branch is to "fork" a repository. Two words that yo
 In this exercise, you are going to fork the `36-350-Fork` repository in my (i.e., `mohamedfarag`'s) account. Point your browser to `https://github.com/mohamedfarag/36-350-Fork` and click on the `Fork` button at top right. When/if you are prompted as to where you want the forked repository to go, indicate that you want it to go to *your* `GitHub` account. Once you've done that, source via `source_url()` the `check_mark.R` file in the repo. The path to the file should include *your account name*, and not mine! (Note that when you run the code chunk, you may see a "spinning circle," with the ultimate output not shown. This is OK...the file should still knit with the correct output.)
 
 ```{r linewidth=80}
-#source_url("Enter the URL to **your** forked version of check_mark.R here")
+source_url("https://raw.githubusercontent.com/ethanvert/36-350-Fork/main/check_mark.R")
 ```
 ---
 
@@ -129,7 +129,7 @@ if ( require("testthat") == FALSE ) {
   library(testthat)
 }
 
-# FILL ME IN
+
 ```
 
 ## Question 6
