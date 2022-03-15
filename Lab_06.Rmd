@@ -43,7 +43,13 @@ suppressWarnings(library(tidyverse))
 
 What is the distribution of the sample standard deviation for 10 draws from a standard normal? Create an empirical distribution by repeating the process of sampling 5000 times. Make a density histogram of your result using `ggplot`. (Pass the argument `aes(y=..density..)` to `geom_histogram()` to change the default frequency histogram into a density histogram). Test the hypothesis that the empirical distribution is itself normal. (Display the p-value.) Google to find an appropriate test of normality. Be sure to set random number seeds here and below for reproducibility. (Also note that `ggplot()` expects a data frame as input, not a vector; you should simply create a one-column data frame from your vector of sample standard deviations and pass that into `ggplot()`.)
 ```{r linewidth=80}
-# FILL ME IN
+set.seed(101)
+n.obs <- 5000
+n.data <- 10
+m <- data.frame(matrix(rnorm(n.obs*n.data), ncol = n.data))
+df <- data.frame(S = apply(m, 1, sd))
+ggplot(data=df,mapping=aes(x = S, y = ..density..)) + geom_histogram(color="red", bins=25)
+shapiro.test(df$S)
 ```
 ```
 FILL ME IN
@@ -55,10 +61,16 @@ FILL ME IN
 
 Repeat the last question, but replace the sample standard deviation with the sample mean. Given the p-value, would you say that the distribution of sample means is closer to being normal than the distribution of sample standard deviations?
 ```{r linewidth=80}
-# FILL ME IN
+set.seed(101)
+n.obs <- 5000
+n.data <- 10
+m <- data.frame(matrix(rnorm(n.obs*n.data), ncol = n.data))
+df <- data.frame(means = rowMeans(m))
+ggplot(data=df,mapping=aes(x = means, y = ..density..)) + geom_histogram(color="red", bins=25)
+shapiro.test(df$means)
 ```
 ```
-FILL ME IN
+Yes, the distribution of sample means is closer to being normal than the distribution of sample standard deviations.
 ```
 
 ## Question 3
@@ -67,7 +79,14 @@ FILL ME IN
 
 What is the probability distribution function for the difference between the maximum value and the median value when you sample nine data from a Uniform(0,1) distribution? Generate an empirical distribution by repeating the process of sampling nine data 5,000 separate times, and record the differences from the maximum and median values. Display a histogram of your result; in addition, display the mean and standard error. The mean should be approximately 0.4.
 ```{r linewidth=80}
-# FILL ME IN
+set.seed(101)
+n.obs = 5000
+n.data = 9
+data.1 <- data.frame(matrix(runif(n.obs * n.data), ncol = 9))
+data.2 <- data.frame(diff = apply(data.1, 1, function(x) {return (max(x) - median(x)) }))
+ggplot(data=data.2,mapping=aes(x = diff, y = ..density..)) + geom_histogram(color="red", bins=25)
+mean(data.2$diff)
+sd(data.2$diff)
 ```
 
 ## Question 4
@@ -76,7 +95,12 @@ What is the probability distribution function for the difference between the max
 
 Estimate the mean and standard error for the sum of three rolled fair dice using 5,000 simulated rolls. Note that there are potentially several ways by which you might attack this problem; how you go about it is up to you, as long as you get a valid final answer. (Which should be close to 10.5.)
 ```{r linewidth=80}
-# FILL ME IN
+distr <- c()
+for (ii in 1:5000) {
+  distr[ii] <- sum(sample(6, 3))
+}
+mean(distr)
+sd(distr)
 ```
 
 ---
@@ -99,7 +123,11 @@ ggplot(data=df.pdf,mapping=aes(x=x,y=fx)) + geom_line(col="blue",size=2)
 
 Code up an inverse transform sampler that allows you to efficiently sample 200 data from this pdf. Histogram your sample, and overlay the line showing the pdf. To do this in `ggplot`, you would use a structure like `ggplot(...) + geom_histogram(...) + geom_line(...)`. The main issue is that the data are histogramming are not the data you would be passing to the line. So: do the `ggplot(...) + geom_histogram(...)` in the same manner you did in previous questions above, where the data frame you point to is the one containing your sampled points, then, when you add on `geom_line(...)`, specify a data argument that points to the `df.pdf` variable defined above and specify a mapping argument that refers to columns of `df.pdf` (and add on a color argument and a size argument like we did above, if you wish).
 ```{r linewidth=80}
-# FILL ME IN
+u <- runif(200)
+x <- (27 * u) ^ (1/3)
+df <- data.frame("x" = u, "fx" = x)
+ggplot(df, mapping = aes(x = fx)) + geom_histogram(col = "red", bins = 30)
+
 ```
 
 ## Question 6

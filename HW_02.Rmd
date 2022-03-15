@@ -97,24 +97,15 @@ while (!gameover) {
   
   w <- which(ladder.bottom == pos)
   if (length(w) > 0) {
-    print("before")
-    print(pos)
     pos = ladder.top[w]
-    print("-------- after")
-    print(pos)
   } else {
     w <- which(chute.top == pos)
     if (length(w) > 0) {
-      print("chute before")
-      print(pos)
       pos = chute.bottom[w]
-      print("chute after------------")
-      print(pos)
     }
   }
   count = count + 1
 }
-print(count)
 ```
 
 ## Question 4

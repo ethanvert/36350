@@ -53,15 +53,28 @@ suppressWarnings(library(tidyverse))
 
 Create a Gaussian mixture model sampler. In this sampler, a datum has a 40% chance of being sampled from a N(-1,1) distribution, and a 60% chance of being sampled from a N(2,1/9) distribution. Sample 100,000 data and create a density histogram of your result. Hint: use `sample()` with `replace` set to `TRUE` and an appropriate vector for `prob` in order to determine which of your 100,000 data should randomly be assigned to distribution 1 as opposed to distribution 2. Also note that if you create a sample of data from distribution 1 and another sample from distribution 2, you can simply combine them by doing, e.g., `x = c(sample1,sample2)`, where `x` becomes a vector of length 100,000.
 ```{r linewidth=80}
-# FILL ME IN
+set.seed(2002)
+s <- sample(c(1, 2), 100000, replace = TRUE, prob = c(.4, .6))
+sample1 <- rnorm(sum(s==1), -1, 1)
+sample2 <- rnorm(sum(s==2), 2, 1/3)
+x <- c(sample1, sample2)
+df <- data.frame(x)
+ggplot(data=df,mapping=aes(x = x, y = ..density..)) + geom_histogram(color="red", bins=30)
+
 ```
 
 ## Question 2
 *(20 points)*
 
-What is the mean of the mixture model in Q1? Compute this via importance sampling, with 100,000 sampled points. You should get an answer around 0.8 (which you can actually derive analytically: if $X \sim N(-1,1)$ and $Y \sim N(2,1/9)$, then $E[0.4X+0.6Y]) = 0.4E[X] + 0.6E[Y] = -0.4 + 1.2 = 0.8$).
+What is the mean of the mixture model in Q1? Compute this via importance sampling, with 100,000 sampled points. You should get an answer around 0.8 (which you can actually derive analytically: if $X \sim N(-1,1)$ and $Y \sim N(2,1/9)$, then $E[0.4X+0.6Y] = 0.4E[X] + 0.6E[Y] = -0.4 + 1.2 = 0.8$).
 ```{r linewidth=80}
-# FILL ME IN
+set.seed(101)
+N = 100000
+g = rnorm(N, 0, sqrt(2))
+h = dnorm(g,mean=0,sd=sqrt(2))
+f = .4 * dnorm(g, -1, 1) + .6 * dnorm(g, 2, 1/3)
+
+mean(g*f/h)
 ```
 
 ## Question 3
@@ -69,7 +82,53 @@ What is the mean of the mixture model in Q1? Compute this via importance samplin
 
 Remember the Chutes and Ladders question? (Q4 of HW 2.) Display a probability histogram that shows the empirical PDF for the number of spins, computed over 10,000 Chutes and Ladders games. Also display the average number of spins that it takes to win the game (approximately 39, give or take) and the minimum number of spins. (Display these two numbers using `cat()`, being see to indicate which is the mean and which is the minimum number of spins.) (Free feel to use your code from HW 2 as a base for what you do here.)
 ```{r linewidth=80}
-# FILL ME IN
+set.seed(1001)
+play.chutes.and.ladders <- function() {
+  gameover = FALSE
+  ladder.bottom <- c(1, 4, 9, 21, 28, 36, 51, 71, 80)
+  ladder.top <- c(38, 14, 31, 42, 84, 44, 67, 91, 100)
+  chute.top <- c(98, 95, 93, 87, 64, 62, 56, 49, 47, 16)
+  chute.bottom <- c(78, 75, 73, 24, 60, 19, 53, 11, 26, 6)
+  pos <- 0
+  count <- 1
+  
+  while (!gameover) {
+    if (pos == 100) {
+      gameover = TRUE
+      break
+    }
+    spin <- sample(1:6, 1)
+    pos = pos + spin
+    if (pos > 100) {
+      pos = pos - spin
+    }
+    
+    w <- which(ladder.bottom == pos)
+    if (length(w) > 0) {
+      pos = ladder.top[w]
+    } else {
+      w <- which(chute.top == pos)
+      if (length(w) > 0) {
+        pos = chute.bottom[w]
+      }
+    }
+    count = count + 1
+  }
+  return (count)
+}
+
+get.cl.counts <- function(n) {
+  counts <- vector("numeric", n)
+  for (ii in 1:n) {
+    counts[ii] <- play.chutes.and.ladders()
+  }
+  return (data.frame(counts = counts))
+}
+
+v <- get.cl.counts(10000)
+ggplot(data=v,mapping=aes(x = counts, y = ..density..)) + geom_histogram(color="red", bins = 30)
+cat(mean(v$counts))
+cat(min(v$counts))
 ```
 
 ## Question 4
@@ -77,7 +136,16 @@ Remember the Chutes and Ladders question? (Q4 of HW 2.) Display a probability hi
 
 The ratio of the area of a circle to the area of a square into which the circle is inscribed is $\pi/4$. Does this ratio increase or decrease with dimensionality? For instance, what is the ratio of volume of a sphere to the volume of a cube into which the sphere is inscribed? Is it less than $\pi/4$? Compute (and display) the ratio for dimensions 3, 4, ..., 10. The result that you see has manifestations for, e.g., algorithms based on nearest neighbors, etc. Curse of dimensionality, n'at. (Hint: to do this calculation succinctly, consider putting samples from your uniform distribution into a $k \times d$ matrix, where $k$ is the number of sampled points, and $d$ is the dimensionality. Then you can use `apply()` to determine the distance of the points from the origin and you can easily finish the calculation from there...)
 ```{r linewidth=80}
-# FILL ME IN
+for (d in 3:10) {
+  k = 100000
+  u <- runif(k*d, -1, 1)
+  m <- matrix(u, ncol = d)
+  x <- apply(m, 1, FUN = function(x) {
+                                      distance <- sqrt(sum(x^2))
+                                      })
+  cat("dimensionality =", d, ":", sum(x<1)/k)
+  cat("\n")
+}
 ```
 
 ## Question 5
@@ -85,7 +153,14 @@ The ratio of the area of a circle to the area of a square into which the circle 
 
 What is the probability distribution function for the difference between the maximum value and the median value when you sample nine data from a Uniform(0,1) distribution? Generate an empirical distribution by repeating the process of sampling nine data 5,000 separate times, and record the differences from the maximum and median values. Display a histogram of your result; in addition, display the mean and standard error. The mean should be approximately 0.4.
 ```{r linewidth=80}
-# FILL ME IN
+set.seed(101)
+n.obs = 5000
+n.data = 9
+data.1 <- data.frame(matrix(runif(n.obs * n.data), ncol = 9))
+data.2 <- data.frame(diff = apply(data.1, 1, function(x) {return (max(x) - median(x)) }))
+ggplot(data=data.2,mapping=aes(x = diff, y = ..density..)) + geom_histogram(color="red", bins=30)
+cat(mean(data.2$diff))
+cat(sd(data.2$diff)/sqrt(5000))
 ```
 
 ## Question 6
@@ -95,5 +170,16 @@ Write an inverse transform sampler that samples 10,000 data from a exponential d
 
 This is a bit tricky. (Note: this is an inverse transform sampler, so every single randomly sampled uniform random variable has to get mapped to a valid value of $x$.) You might want to start by computing the probabilities $P[0.5 \leq X \leq 1]$ and $P[2 \leq X \leq 4]$. Call these two quantities $u_{\rm lo}$ and $u_{\rm hi}$, and sample random numbers from a Uniform(0,$u_{\rm lo}+u_{\rm hi}$) distribution. If the number is $< u_{\rm lo}$, the sampled number should be mapped to a sample from the lower range, whereas if the number is $> u_{\rm lo}$, it should be mapped to a sample from the upper range. Note: to map from you uniform random variables to exponentially distributed ones, pass your uniform r.v.'s into `qexp()`.
 ```{r linewidth=80}
-# FILL ME IN
+set.seed(707)
+n <- 10000
+p.lo <- exp(-0.5) - exp(-1)
+p.hi <- exp(-2) - exp(-4)
+u <- runif(n,0, p.lo + p.hi)
+
+w <- which(u <= p.lo)
+
+x.1 <- (1-exp(-0.5)) + u[w]
+x.2 <- (1-exp(-2)) + u[-w] - p.lo 
+df <- data.frame(x = qexp(c(x.1, x.2)))
+ggplot(data=df,mapping=aes(x = x)) + geom_histogram(color="red", mappying=aes(y = ..density..))
 ```
